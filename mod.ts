@@ -1,10 +1,10 @@
 import * as ort from "https://deno.land/x/onnx_runtime@0.0.3/mod.ts";
 
 export const resample = (
-  array: TypedArray,
+  array: Int16Array,
   sampleRateOld,
   sampleRateNew
-): TypedArray => {
+): Int16Array => {
   if (sampleRateNew === sampleRateOld) return array;
   const factor = sampleRateNew / sampleRateOld;
   const newLength = Math.round(array.length * factor);
@@ -16,10 +16,14 @@ export const resample = (
   return result;
 };
 
-export const createSileroVad = async ({
-  sampleRate = 8000,
-  target16 = false,
-} = {}) => {
+export interface VADOptions {
+  sampleRate: number;
+  target16?: boolean;
+}
+
+export default async (
+  { sampleRate = 8000, target16 = false }: VADOptions = { sampleRate: 8000 }
+) => {
   const session = await ort.InferenceSession.create(
     new URL("./models/silero_vad.with_runtime_opt.ort", import.meta.url).href
   );
