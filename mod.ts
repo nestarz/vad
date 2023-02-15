@@ -1,10 +1,21 @@
 import * as ort from "https://deno.land/x/onnx_runtime@0.0.3/mod.ts";
 
+export type TypedArray =
+  | Int8Array
+  | Uint8Array
+  | Uint8ClampedArray
+  | Int16Array
+  | Uint16Array
+  | Int32Array
+  | Uint32Array
+  | Float32Array
+  | Float64Array;
+
 export const resample = (
-  array: Int16Array,
+  array: TypedArray,
   sampleRateOld,
   sampleRateNew
-): Int16Array => {
+): TypedArray => {
   if (sampleRateNew === sampleRateOld) return array;
   const factor = sampleRateNew / sampleRateOld;
   const newLength = Math.round(array.length * factor);
